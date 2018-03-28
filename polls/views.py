@@ -1,14 +1,48 @@
 # from django.http import Http404, HttpResponse
 # from django.template import loader
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
-
-from .models import Question
+from os import path
+from .forms import UploadFileForm
+from .handle_pd import csv_to_html_table
 from .models import Choice
+from .models import Question
+
+
+def csv_file_upload(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            if request.FILES['file'].name == request.session['filename'] and path.exists(request.session['filepath']):
+                filepath = request.session['filepath']
+                filename = request.session['filename']
+            else:
+                file = request.FILES['file']
+                fs = FileSystemStorage()
+                filename = fs.save(file.name, file)
+                filepath = fs.path(filename)
+
+                request.session['filepath'] = filepath
+                request.session['filename'] = filename
+
+            print(filepath)
+            print(filename)
+            table = csv_to_html_table(filepath)
+            context = {'table': table}
+
+            return render(request, 'polls/table.html', context)
+    else:
+        form = UploadFileForm()
+    return HttpResponseRedirect(reverse('polls:upload'), {'form': form})
+
+
+def upload_file(request):
+    return render(request, 'polls/upload.html')
 
 
 class IndexView(generic.ListView):

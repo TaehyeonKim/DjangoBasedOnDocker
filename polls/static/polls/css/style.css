@@ -3,5 +3,22 @@ li a {
 }
 
 body {
-    background: white url("image/background.gif") no-repeat;
+    background: white url("/image/source.gif") no-repeat;
+}
+
+.left-box {
+  float: left;
+  width: 50%;
+}
+.right-box {
+  float: right;
+  width: 50%;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
 }

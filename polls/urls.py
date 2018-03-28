@@ -7,7 +7,10 @@ urlpatterns = [
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
     path('<int:question_id>/vote/', views.vote, name='vote'),
+    path('pd/', views.upload_file, name='upload'),
+    path('pd/csv_file_upload', views.csv_file_upload, name='csv_file_upload'),
 ]
+
 # urlpatterns = [
 #     # ex: /polls/
 #     path('', views.index, name='index'),
