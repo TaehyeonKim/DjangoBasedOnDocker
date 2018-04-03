@@ -1,5 +1,7 @@
 # from django.http import Http404, HttpResponse
 # from django.template import loader
+from os import path
+
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -7,7 +9,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
-from os import path
+
 from .forms import UploadFileForm
 from .handle_pd import csv_to_html_table
 from .models import Choice
@@ -18,7 +20,8 @@ def csv_file_upload(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            if request.FILES['file'].name == request.session['filename'] and path.exists(request.session['filepath']):
+            if request.FILES['file'].name == request.session.get('filename') \
+                    and path.exists(request.session.get('filepath')):
                 filepath = request.session['filepath']
                 filename = request.session['filename']
             else:
